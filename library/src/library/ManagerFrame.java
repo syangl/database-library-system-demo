@@ -18,6 +18,16 @@ import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 
 public class ManagerFrame extends JFrame {
+	//µ¥ÀýÄ£Ê½
+	private ManagerFrame() {};
+	private static ManagerFrame instance;
+	public static ManagerFrame getInstance(){
+		if(instance == null) {
+			instance = new ManagerFrame();
+			instance.create();
+		}
+		return instance;
+	}
 
 	private JPanel contentPane;
 
@@ -25,22 +35,23 @@ public class ManagerFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ManagerFrame frame = new ManagerFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ManagerFrame frame = new ManagerFrame();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+		ManagerFrame.getInstance();
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public ManagerFrame() {
+	public void create() {
 		setTitle("\u7BA1\u7406\u5458\u670D\u52A1");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ManagerFrame.class.getResource("/library/book.jpg")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,6 +126,25 @@ public class ManagerFrame extends JFrame {
 		gbc_btnNewButton_1_1_1_1.gridx = 0;
 		gbc_btnNewButton_1_1_1_1.gridy = 8;
 		contentPane.add(btnNewButton_1_1_1_1, gbc_btnNewButton_1_1_1_1);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
 	}
 
 }

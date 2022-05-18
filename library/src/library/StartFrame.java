@@ -27,39 +27,21 @@ import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
 
 public class StartFrame extends JFrame {
-//	private String username;
-//	private String password;
-//	public String getUsername() {
-//		return username;
-//	}
-//	public String getPassword() {
-//		return password;
-//	}
-
-	private JPanel contentPane;
-	private JPasswordField passwordField;
-	private JTextField textField;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					StartFrame frame = new StartFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	//µ¥ÀýÄ£Ê½
+	private StartFrame() {};
+	private static StartFrame instance;
+	public static StartFrame getInstance(){
+		if(instance == null) {
+			instance = new StartFrame();
+			instance.create();
+		}
+		return instance;
 	}
+	
+	private String username;
+	private String password;
 
-	/**
-	 * Create the frame.
-	 */
-	public StartFrame() {
+	private void create() {
 		setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 12));
 		setIconImage(Toolkit.getDefaultToolkit().getImage(StartFrame.class.getResource("/library/book.jpg")));
 		setTitle("\u767B\u5F55\u754C\u9762");
@@ -221,10 +203,46 @@ public class StartFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// µÇÂ¼
-				new LoginVerify().Start(lblUserName.getText(), lblPassword.getText());
+				
+				LoginVerify.getInstance().Start(lblUserName.getText(), lblPassword.getText());
+				getInstance().dispose();
+
 			}
 		});
 		
 		
+		
+		
+		//startframe
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
 	}
+	private JPanel contentPane;
+	private JPasswordField passwordField;
+	private JTextField textField;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		StartFrame.getInstance();
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+//	public StartFrame() {
+//		
+//	}
 }
+
+

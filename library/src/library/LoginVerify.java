@@ -2,6 +2,19 @@ package library;
 import java.sql.*;
 
 public class LoginVerify {
+	//单例模式
+	private LoginVerify() {};
+	private static LoginVerify instance;
+	public static LoginVerify getInstance(){
+		if(instance == null) {
+			instance = new LoginVerify();
+		}
+		return instance;
+	}
+	
+	
+	
+	
 	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  
     static final String DB_URL = "jdbc:mysql://localhost:3306/library?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     
@@ -42,7 +55,7 @@ public class LoginVerify {
     				//验证
     				if(loginName == ManagerName && loginPwd == ManagerPwd) {
     					//成功切换管理员窗口
-    					new ManagerFrame();
+    					ManagerFrame.getInstance().show();
     					
     					
     				}else {
@@ -79,7 +92,7 @@ public class LoginVerify {
     				//验证
     				if(loginName == readerName && loginPwd == readerPwd) {
     					//成功切换读者用户窗口
-    					new UserFrame();
+    					UserFrame.getInstance().show();
     					
     					
     				}else {
