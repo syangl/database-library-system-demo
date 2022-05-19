@@ -14,6 +14,8 @@ import java.awt.Insets;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 
@@ -88,7 +90,7 @@ public class ManagerFrame extends JFrame {
 		gbc_btnNewButton_1.gridy = 4;
 		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
 		
-		JButton btnNewButton_1_1_2 = new JButton("\u56FE\u4E66\u501F\u9605");
+		JButton btnNewButton_1_1_2 = new JButton("借阅记录");
 		btnNewButton_1_1_2.setFont(new Font("微软雅黑", Font.PLAIN, 30));
 		btnNewButton_1_1_2.setBackground(new Color(255, 228, 181));
 		GridBagConstraints gbc_btnNewButton_1_1_2 = new GridBagConstraints();
@@ -107,7 +109,7 @@ public class ManagerFrame extends JFrame {
 		gbc_btnNewButton_1_1.gridy = 6;
 		contentPane.add(btnNewButton_1_1, gbc_btnNewButton_1_1);
 		
-		JButton btnNewButton_1_1_1 = new JButton("\u7528\u6237\u4FE1\u606F");
+		JButton btnNewButton_1_1_1 = new JButton("用户信息");
 		btnNewButton_1_1_1.setFont(new Font("微软雅黑", Font.PLAIN, 30));
 		btnNewButton_1_1_1.setBackground(new Color(255, 228, 181));
 		GridBagConstraints gbc_btnNewButton_1_1_1 = new GridBagConstraints();
@@ -127,12 +129,52 @@ public class ManagerFrame extends JFrame {
 		gbc_btnNewButton_1_1_1_1.gridy = 8;
 		contentPane.add(btnNewButton_1_1_1_1, gbc_btnNewButton_1_1_1_1);
 		
+		//用户信息跳转
+		btnNewButton_1_1_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ManagerFrame.getInstance().dispose();
+				UserMessage.getInstance().setVisible(true);
+			}
+		});
 		
-		
-		
-		
-		
-		
+		//管理员信息跳转
+		btnNewButton_1_1_1_1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ManagerFrame.getInstance().dispose();
+				ManagerMessage.getInstance().setVisible(true);
+			}
+		});
+		//图书跳转
+		btnNewButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ManagerFrame.getInstance().dispose();
+				BookLookUp.getInstance().setVisible(true);
+			}
+		});
+		//借阅记录跳转
+		btnNewButton_1_1_2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ManagerFrame.getInstance().dispose();
+				BorrowRecords.getInstance().setVisible(true);
+			}
+		});
+		//罚款记录跳转
+		btnNewButton_1_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ManagerFrame.getInstance().dispose();
+				Penalty.getInstance().setVisible(true);
+			}
+		});
 		
 		
 		

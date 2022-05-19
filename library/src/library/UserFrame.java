@@ -95,14 +95,14 @@ public class UserFrame extends JFrame {
 		gbc_btnNewButton_1_1.gridy = 4;
 		contentPane.add(btnNewButton_1_1, gbc_btnNewButton_1_1);
 		
-		JButton btnNewButton_1 = new JButton("\u56FE\u4E66\u501F\u9605");
-		btnNewButton_1.setBackground(new Color(255, 228, 181));
-		btnNewButton_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 30));
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 5;
-		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
+//		JButton btnNewButton_1 = new JButton("\u56FE\u4E66\u501F\u9605");
+//		btnNewButton_1.setBackground(new Color(255, 228, 181));
+//		btnNewButton_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 30));
+//		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
+//		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
+//		gbc_btnNewButton_1.gridx = 0;
+//		gbc_btnNewButton_1.gridy = 5;
+//		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
 		
 		JButton btnNewButton_2 = new JButton("\u501F\u9605\u8BB0\u5F55");
 		btnNewButton_2.setBackground(new Color(255, 228, 181));
@@ -121,6 +121,42 @@ public class UserFrame extends JFrame {
 		gbc_btnNewButton_2_1.gridx = 0;
 		gbc_btnNewButton_2_1.gridy = 7;
 		contentPane.add(btnNewButton_2_1, gbc_btnNewButton_2_1);
+		
+		//Í¼Êé²éÑ¯Ìø×ª
+		btnNewButton_1_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UserFrame.getInstance().dispose();
+				BookLookUp.getInstance().setVisible(true);
+			}
+		});
+//		//½èÔÄÌø×ª
+//		btnNewButton_1.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				
+//			}
+//		});
+		//½èÔÄ¼ÇÂ¼
+		btnNewButton_2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UserFrame.getInstance().dispose();
+				BorrowRecords.getInstance().setVisible(true);
+			}
+		});
+		//·£¿î¼ÇÂ¼
+		btnNewButton_2_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UserFrame.getInstance().dispose();
+				Penalty.getInstance().setVisible(true);
+			}
+		});
 		
 		
 		

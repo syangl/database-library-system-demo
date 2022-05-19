@@ -40,6 +40,7 @@ public class StartFrame extends JFrame {
 	
 	private String username;
 	private String password;
+	
 
 	private void create() {
 		setFont(new Font("微软雅黑", Font.PLAIN, 12));
@@ -63,7 +64,7 @@ public class StartFrame extends JFrame {
 		textArea.setBackground(new Color(255, 255, 240));
 		textArea.setPreferredSize(new Dimension(50,50));
 		
-		JLabel lblUserName = new JLabel("\u7528\u6237\u540D");
+		JLabel lblUserName = new JLabel("用户ID");
 		lblUserName.setHorizontalAlignment(SwingConstants.CENTER);
 		lblUserName.setFont(new Font("微软雅黑", Font.BOLD, 30));
 		
@@ -168,9 +169,7 @@ public class StartFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 勾选时把LoginVerify中的identFlag置为管理员
-				
-				
-				
+				LoginVerify.getInstance().identFlag = true;
 				
 			}
 		});
@@ -190,8 +189,8 @@ public class StartFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 注册
-				
-				
+				RegisterDialog.getInstance();
+				getInstance().dispose();
 				
 				
 			}
@@ -204,8 +203,7 @@ public class StartFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// 登录
 				
-				LoginVerify.getInstance().Start(lblUserName.getText(), lblPassword.getText());
-				getInstance().dispose();
+				LoginVerify.getInstance().Connect(textArea.getText(), passwordField.getText());
 
 			}
 		});
@@ -240,9 +238,13 @@ public class StartFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-//	public StartFrame() {
-//		
-//	}
+	
+	public void setTextField(String str) {
+		textField.setFont(new Font(str, Font.PLAIN, 25));
+		textField.setText(str);
+	}
+	
+	
 }
 
 
