@@ -128,6 +128,7 @@ public class UserFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				UserFrame.getInstance().dispose();
+				BookLookUp.getInstance().setIdentFlagFalse();
 				BookLookUp.getInstance().setVisible(true);
 			}
 		});

@@ -22,6 +22,10 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class UpdateInsertDelete extends JDialog {
 	//单例模式
@@ -34,6 +38,16 @@ public class UpdateInsertDelete extends JDialog {
 		}
 		return instance;
 	}
+	
+	
+	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  
+    static final String DB_URL = "jdbc:mysql://localhost:3306/library?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    
+    // 数据库的用户名与密码
+    static final String USER = "root";
+    static final String PASS = "123456";
+	
+	
 	
 
 	private final JPanel contentPanel = new JPanel();
@@ -516,20 +530,418 @@ public class UpdateInsertDelete extends JDialog {
 			}
 		}
 		
+		//listeners
+		bookInsertButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 插入图书
+				InsertBookConnect(textField_1.getText(), textField_2.getText(),
+						textField_3.getText(), textField_4.getText(), textField_5.getText());
+			}
+		});
+		
+		borrowInsertButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 借阅记录插入
+				InsertBorrowConnect(textField_6.getText(), textField_7.getText(), textField_8.getText(), 
+										textField_9.getText(), textField_10.getText(), textField_11.getText());
+				
+			}
+		});
+		
+		penaltyInsertButton_1_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 罚款记录插入
+				InsertPenaltyConnect(textField_12.getText(), textField_14.getText(), textField_16.getText(), 
+						textField_13.getText(), textField_15.getText(), textField_17.getText());
+//				System.out.println(12+textField_12.getText());
+//				System.out.println(13+textField_13.getText());
+//				System.out.println(14+textField_14.getText());
+//				System.out.println(15+textField_15.getText());
+//				System.out.println(16+textField_16.getText());
+			}
+		});
+		
+		bookDeleteButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 图书事物删除
+				DeleteBookConnect(textField_1.getText());
+			}
+		});
+		
+		penaltyDeleteButton_1_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 罚款记录删除
+				DeletePenaltyConnect(textField_16.getText());
+			}
+		});
+		
+		borrowDeleteButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 借阅记录删除
+				DeleteBorrowConnect(textField_9.getText());
+			}
+		});
+		
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
 	
 	
 	//按下插入更新删除，调用对应的connect函数进行sql操作，结果成功与否反馈在最上方的文本框（记录可以回到查询界面查询）
-	public void InsertConnect(/*参数    */) {
+	//图书，无关联
+	public void InsertBookConnect(String bookID, String author, String price, String publisher, String numbers) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+    		    		
+    		//读者验证登录
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		if(author.equals("")) {
+    			author = "NULL";
+    		}
+    		if(price.equals("")) {
+    			price = "NULL";
+    		}
+    		if(publisher.equals("")) {
+    			publisher = "NULL";
+    		}
+    		if(numbers.equals("")) {
+    			numbers = "NULL";
+    		}
+    		sql = "insert into 图书(图书ID, 作者, 价格, 出版社, 库存数量) values("+bookID+", '"+author+"', "+price+", '"+publisher+"', "+numbers+");";
+    		System.out.println(sql);
+    		stmt.execute(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("图书插入成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("图书插入失败！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
+	}
+	
+	public void DeleteBookConnect(String bookID) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+    		    		
+    		//读者验证登录
+    		int sql1Res = -1;//判断delete是否正常执行
+    		int sql2Res = -1;
+    		int sql3Res = -1;
+    		stmt = conn.createStatement();
+    		String sqlstart;
+    		sqlstart = "start transaction";
+    		stmt.execute(sqlstart);
+    		String sql1;
+    		sql1 = "delete from 借阅记录 where 借阅记录.图书ID = "+bookID+";";
+    		sql1Res = stmt.executeUpdate(sql1);
+    		String sql2;
+    		sql2 = "delete from 罚款记录 where 罚款记录.图书ID = "+bookID+";";
+    		sql2Res = stmt.executeUpdate(sql2);
+    		String sql3;
+    		sql3 = "delete from 图书 where 图书ID = "+bookID+";";
+    		sql3Res = stmt.executeUpdate(sql3);
+    		String sqlend;
+    		if(sql1Res >= 0 && sql2Res >=0 && sql3Res >= 0) {
+    			sqlend = "commit";
+    			stmt.execute(sqlend);
+    			UpdateInsertDelete.getInstance().textField.setText("commit！");
+    		}else {
+    			sqlend = "rollback";
+    			stmt.execute(sqlend);
+    			UpdateInsertDelete.getInstance().textField.setText("rollback！");
+    		}
+
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
+	}
+	
+	public void UpdateBookConnect(/*参数    */) {
+		
+	}
+	//借阅记录，关联账号和图书
+	public void InsertBorrowConnect(String borrowNum, String borrowDate, String backDate, String borrowID, String bookID, String userID) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+    		    		
+    		//读者验证登录
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		if(borrowNum.equals("")) {
+    			borrowNum = "NULL";
+    		}
+    		if(borrowDate.equals("")) {
+    			borrowDate = "NULL";
+    		}
+    		if(backDate.equals("")) {
+    			backDate = "NULL";
+    		}
+
+    		sql = "insert into 借阅记录(借阅数量, 借出日期, 归还期限, 借阅记录ID, 图书ID, 账户ID) values("+borrowNum+", '"+borrowDate+"', '"+backDate+"', "+borrowID+", "+bookID+", "+userID+");";
+    		System.out.println(sql);
+    		stmt.execute(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("借阅记录插入成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("借阅记录插入失败，图书或读者账号不存在或ID为空！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
+	}
+	
+	public void DeleteBorrowConnect(String borrowID) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+    		    		
+    		//读者验证登录
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		sql = "delete from 借阅记录 where 借阅记录ID = "+borrowID+";";
+    		stmt.executeUpdate(sql);
+    		System.out.println(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("借阅记录删除成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("借阅记录删除失败，ID未填或不存在！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
+	}
+	
+	public void UpdateBorrowConnect(/*参数    */) {
 		
 	}
 	
-	public void DeleteConnect(/*参数    */) {
-		
+	//罚款记录，关联账号和图书
+	public void InsertPenaltyConnect(String unBackNum, String penaltyFee, String penaltyID, String bookID, String userID, String time) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+    		    		
+    		//读者验证登录
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		if(unBackNum.equals("")) {
+    			unBackNum = "NULL";
+    		}
+    		if(penaltyFee.equals("")) {
+    			penaltyFee = "NULL";
+    		}
+    		if(time.equals("")) {
+    			time = "NULL";
+    		}
+
+    		sql = "insert into 罚款记录(未还数量, 罚款金额, 罚款记录ID, 图书ID, 账户ID, 超时时长) values("+unBackNum+", "+penaltyFee+", "+penaltyID+", "+bookID+", "+userID+", '"+time+"');";
+    		stmt.execute(sql);
+    		System.out.println(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("罚款记录插入成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("罚款记录插入失败，ID未填或不存在！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
 	}
 	
-	public void UpdateConnect(/*参数    */) {
+	public void DeletePenaltyConnect(String penaltyID) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+    		    		
+    		//读者验证登录
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		sql = "delete from 罚款记录 where 罚款记录ID = "+penaltyID+";";
+    		System.out.println(sql);
+    		stmt.executeUpdate(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("罚款记录删除成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("罚款记录删除失败，ID未填或不存在！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
+    		
+	}
+	
+	public void UpdatePenaltyConnect(/*参数    */) {
 		
 	}
 

@@ -59,6 +59,13 @@ public class BookLookUp extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
+	static final String KEY = "123456";
+	private static boolean identFlag = false;
+	public void setIdentFlagFalse(){
+		identFlag = false;
+	}
+	
 	public void create() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1255, 732);
@@ -179,26 +186,51 @@ public class BookLookUp extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BookLookUp.getInstance().dispose();
-				UpdateInsertDelete.getInstance().setVisible(true);
+				if(identFlag == true) {
+					BookLookUp.getInstance().dispose();
+					UpdateInsertDelete.getInstance().setVisible(true);
+				}
 			}
 		});
 		btnNewButton_2.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BookLookUp.getInstance().dispose();
-				UpdateInsertDelete.getInstance().setVisible(true);
+				if(identFlag == true) {
+					BookLookUp.getInstance().dispose();
+					UpdateInsertDelete.getInstance().setVisible(true);
+				}
 			}
 		});
 		btnNewButton_3.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BookLookUp.getInstance().dispose();
-				UpdateInsertDelete.getInstance().setVisible(true);
+				if(identFlag == true) {
+					BookLookUp.getInstance().dispose();
+					UpdateInsertDelete.getInstance().setVisible(true);
+				}
 			}
 		});
+		
+		//listeners
+		chckbxNewCheckBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 管理员操作
+				JCheckBox ch = (JCheckBox)e.getSource();
+				if(ch.isSelected()) {
+					if(passwordField.getText().equals(KEY)) {
+						identFlag = true;
+					}
+				}
+			}
+		});
+		
+		
+		
+		
 		
 		
 		setVisible(true);
