@@ -179,8 +179,8 @@ public class UpdateInsertDelete extends JDialog {
 		JButton bookDeleteButton = new JButton("\u5220\u9664");
 		bookDeleteButton.setFont(new Font("微软雅黑", Font.PLAIN, 20));
 		
-		JButton bookUpdateButto = new JButton("\u66F4\u65B0");
-		bookUpdateButto.setFont(new Font("微软雅黑", Font.PLAIN, 20));
+		JButton bookUpdateButton = new JButton("\u66F4\u65B0");
+		bookUpdateButton.setFont(new Font("微软雅黑", Font.PLAIN, 20));
 		
 		JButton borrowInsertButton_1 = new JButton("\u63D2\u5165");
 		borrowInsertButton_1.setFont(new Font("微软雅黑", Font.PLAIN, 20));
@@ -309,7 +309,7 @@ public class UpdateInsertDelete extends JDialog {
 							.addGap(171)
 							.addComponent(bookDeleteButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
 							.addGap(172)
-							.addComponent(bookUpdateButto, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))
+							.addComponent(bookUpdateButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_contentPanel.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 1144, GroupLayout.PREFERRED_SIZE))
@@ -392,7 +392,7 @@ public class UpdateInsertDelete extends JDialog {
 							.addGap(31))
 						.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(bookUpdateButto, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+							.addComponent(bookUpdateButton, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
 							.addGap(32)))
 					.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -559,11 +559,6 @@ public class UpdateInsertDelete extends JDialog {
 				// 罚款记录插入
 				InsertPenaltyConnect(textField_12.getText(), textField_14.getText(), textField_16.getText(), 
 						textField_13.getText(), textField_15.getText(), textField_17.getText());
-//				System.out.println(12+textField_12.getText());
-//				System.out.println(13+textField_13.getText());
-//				System.out.println(14+textField_14.getText());
-//				System.out.println(15+textField_15.getText());
-//				System.out.println(16+textField_16.getText());
 			}
 		});
 		
@@ -594,6 +589,45 @@ public class UpdateInsertDelete extends JDialog {
 			}
 		});
 		
+		bookUpdateButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// book数量更新
+				String str = textField_5.getText();
+				String[] addNum = str.split("\\+");
+				UpdateBookConnect(addNum[1], textField_1.getText(), "1");//1代表图书
+			}
+		});
+		
+		borrowUpdateButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 借阅数量更新
+				String str = textField_6.getText();
+				String[] addNum = str.split("\\+");
+				UpdateBorrowConnect(addNum[1], textField_9.getText(), "2");//2代表借阅
+			}
+		});
+		
+		penaltyUpdateButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 罚款数量更新
+				String str = textField_12.getText();
+				String[] addNum = str.split("\\+");
+				UpdatePenaltyConnect(addNum[1], textField_16.getText(), "3");//3代表罚款
+			}
+		});
+		
+		
+		
+		
+		
+		
+		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
@@ -725,8 +759,51 @@ public class UpdateInsertDelete extends JDialog {
     	System.out.println("再见!");
 	}
 	
-	public void UpdateBookConnect(/*参数    */) {
-		
+	public void UpdateBookConnect(String addNum, String bookID, String optionType) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		sql = "call num_update("+addNum+","+bookID+","+optionType+");";
+    		System.out.println(sql);
+    		int res = stmt.executeUpdate(sql);
+    		if(res > 0) {
+    			UpdateInsertDelete.getInstance().textField.setText("库存数量更新成功！");
+    		}else {
+    			UpdateInsertDelete.getInstance().textField.setText("库存数量更新失败！");
+    		}
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
 	}
 	//借阅记录，关联账号和图书
 	public void InsertBorrowConnect(String borrowNum, String borrowDate, String backDate, String borrowID, String bookID, String userID) {
@@ -832,12 +909,54 @@ public class UpdateInsertDelete extends JDialog {
     	System.out.println("再见!");
 	}
 	
-	public void UpdateBorrowConnect(/*参数    */) {
-		
+	public void UpdateBorrowConnect(String addNum, String borrowID, String optionType) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		sql = "call num_update("+addNum+","+borrowID+","+optionType+");";
+    		System.out.println(sql);
+    		stmt.execute(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("借阅数量更新成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("借阅数量更新失败！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
 	}
 	
 	//罚款记录，关联账号和图书
-	public void InsertPenaltyConnect(String unBackNum, String penaltyFee, String penaltyID, String bookID, String userID, String time) {
+	public void InsertPenaltyConnect(String unBackNum, String penaltyFee, String penaltyID, 
+													String bookID, String userID, String time) {
 		Connection conn = null;
     	Statement stmt = null;
     	try{
@@ -941,8 +1060,49 @@ public class UpdateInsertDelete extends JDialog {
     		
 	}
 	
-	public void UpdatePenaltyConnect(/*参数    */) {
-		
+	public void UpdatePenaltyConnect(String addNum, String peanltyID, String optionType) {
+		Connection conn = null;
+    	Statement stmt = null;
+    	try{
+    		
+    		// 注册 JDBC 驱动
+    		Class.forName(JDBC_DRIVER);
+    		
+    		// 打开链接
+    		System.out.println("连接数据库...");
+    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+    		stmt = conn.createStatement();
+    		String sql;
+    		sql = "call num_update("+addNum+","+peanltyID+","+optionType+");";
+    		System.out.println(sql);
+    		stmt.execute(sql);
+
+    		UpdateInsertDelete.getInstance().textField.setText("罚款数量更新成功！");
+    		// 完成后关闭
+    		stmt.close();
+    		conn.close();
+    		
+    	}catch(SQLException se){
+    		// 处理 JDBC 错误
+    		UpdateInsertDelete.getInstance().textField.setText("罚款数量更新失败！");
+    		se.printStackTrace();
+    	}catch(Exception e){
+    		// 处理 Class.forName 错误
+    		e.printStackTrace();
+    	}finally{
+    		// 关闭资源
+    		try{
+    			if(stmt!=null) stmt.close();
+    		}catch(SQLException se2){
+    		}// 什么都不做
+    		try{
+    			if(conn!=null) conn.close();
+    		}catch(SQLException se){
+    			se.printStackTrace();
+    		}
+    	}
+    	System.out.println("再见!");
 	}
 
 }

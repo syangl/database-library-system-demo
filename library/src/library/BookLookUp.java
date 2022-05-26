@@ -12,8 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
@@ -26,6 +28,11 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 public class BookLookUp extends JFrame {
@@ -47,7 +54,7 @@ public class BookLookUp extends JFrame {
 	private final JPanel panel_1 = new JPanel();
 	private JTextField textField;
 	private JPasswordField passwordField;
-	private JTextField textField_1;
+	private JTextArea textField_1;
 
 	/**
 	 * Launch the application.
@@ -59,6 +66,14 @@ public class BookLookUp extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
+	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  
+    static final String DB_URL = "jdbc:mysql://localhost:3306/library?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    
+    // 数据库的用户名与密码
+    static final String USER = "root";
+    static final String PASS = "123456";
+	
 	
 	static final String KEY = "123456";
 	private static boolean identFlag = false;
@@ -78,8 +93,8 @@ public class BookLookUp extends JFrame {
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
 		//结果区视图
-		textField_1 = new JTextField();
-		textField_1.setHorizontalAlignment(SwingConstants.LEADING);
+		textField_1 = new JTextArea();
+		//textField_1.setHorizontalAlignment(SwingConstants.LEADING);
 		textField_1.setFont(new Font("微软雅黑", Font.PLAIN, 30));
 		scrollPane.setViewportView(textField_1);
 		textField_1.setEditable(false);
@@ -93,7 +108,7 @@ public class BookLookUp extends JFrame {
 		
 		passwordField = new JPasswordField();
 		
-		JLabel lblNewLabel_5 = new JLabel("\u56FE\u4E66\u540D");
+		JLabel lblNewLabel_5 = new JLabel("图书ID");
 		lblNewLabel_5.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_5.setFont(new Font("微软雅黑", Font.BOLD, 20));
 		
@@ -227,12 +242,81 @@ public class BookLookUp extends JFrame {
 				}
 			}
 		});
+		//查询
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				lookUp(textField.getText());
+			}
+
+			public void lookUp(String bookID) {
+				Connection conn = null;
+		    	Statement stmt = null;
+		    	try{
+		    		
+		    		// 注册 JDBC 驱动
+		    		Class.forName(JDBC_DRIVER);
+		    		
+		    		// 打开链接
+		    		System.out.println("连接数据库...");
+		    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		    		    		
+		    		//读者验证登录
+
+		    		stmt = conn.createStatement();
+		    		String sql;
+		    		sql = "select * from 图书 where 图书ID = "+bookID+";";
+		    		System.out.println(sql);
+		    		ResultSet rs = stmt.executeQuery(sql);
+
+		    		// 展开结果集数据库
+		    		StringBuffer str = new StringBuffer("");
+		    		while(rs.next()){
+		    			// 通过字段检索
+		    			Integer ID  = rs.getInt("图书ID");
+		    			String author = rs.getString("作者");
+		    			Integer price = rs.getInt("价格");
+		    			String publiser = rs.getString("出版社");
+		    			Integer num = rs.getInt("库存数量");
+		    			str.append(ID.toString()+" 	          "+author
+		    					+"	               "+price.toString()+"		"+publiser+"	  "+num.toString()+"\n");
+		    			textField_1.setText(str.toString());
+		    			
+
+		    			// 输出数据
+		    		}
+		    		// 完成后关闭
+		    		rs.close();
+		    		stmt.close();
+		    		conn.close();
+		    		
+		    	}catch(SQLException se){
+		    		// 处理 JDBC 错误
+		    		se.printStackTrace();
+		    	}catch(Exception e){
+		    		// 处理 Class.forName 错误
+		    		e.printStackTrace();
+		    	}finally{
+		    		// 关闭资源
+		    		try{
+		    			if(stmt!=null) stmt.close();
+		    		}catch(SQLException se2){
+		    		}// 什么都不做
+		    		try{
+		    			if(conn!=null) conn.close();
+		    		}catch(SQLException se){
+		    			se.printStackTrace();
+		    		}
+		    	}
+		    	System.out.println("再见!");
+			}
+		});
 		
 		
-		
-		
-		
-		
+		setResizable(false);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(StartFrame.class.getResource("/library/book.jpg")));
 		setVisible(true);
 	}
 

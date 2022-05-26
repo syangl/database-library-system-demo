@@ -80,15 +80,24 @@ public class ManagerFrame extends JFrame {
 		gbc_lblNewLabel.gridy = 2;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
 		
+		JButton btnMultiButton_1 = new JButton("×ÛºÏ²éÑ¯");
+		btnMultiButton_1.setBackground(new Color(255, 228, 181));
+		btnMultiButton_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 30));
+		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
+		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton_1.gridx = 0;
+		gbc_btnNewButton_1.gridy = 3;
+		contentPane.add(btnMultiButton_1, gbc_btnNewButton_1);
+		
 		JButton btnNewButton_1 = new JButton("\u56FE\u4E66\u67E5\u8BE2");
 		btnNewButton_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 30));
 		btnNewButton_1.setBackground(new Color(255, 228, 181));
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.VERTICAL;
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 4;
-		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
+		GridBagConstraints gbc_btnNewButton_11 = new GridBagConstraints();
+		gbc_btnNewButton_11.fill = GridBagConstraints.VERTICAL;
+		gbc_btnNewButton_11.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton_11.gridx = 0;
+		gbc_btnNewButton_11.gridy = 4;
+		contentPane.add(btnNewButton_1, gbc_btnNewButton_11);
 		
 		JButton btnNewButton_1_1_2 = new JButton("½èÔÄ¼ÇÂ¼");
 		btnNewButton_1_1_2.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 30));
@@ -177,6 +186,15 @@ public class ManagerFrame extends JFrame {
 			}
 		});
 		
+		//×ÛºÏ²éÑ¯Ìø×ª
+		btnMultiButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ManagerFrame.getInstance().dispose();
+				MultiLookUp.getInstance().setVisible(true);
+			}
+		});
 		
 		
 		
@@ -184,8 +202,7 @@ public class ManagerFrame extends JFrame {
 		
 		
 		
-		
-		
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 	}

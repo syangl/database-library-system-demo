@@ -263,7 +263,7 @@ public class RegisterDialog extends JDialog {
 		
 		
 		
-		
+		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}

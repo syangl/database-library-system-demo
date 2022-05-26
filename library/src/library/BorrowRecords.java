@@ -7,7 +7,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
@@ -34,7 +44,7 @@ public class BorrowRecords extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
-	private JTextField textField_1;
+	private JTextArea textField_1;
 
 	/**
 	 * Launch the application.
@@ -46,6 +56,14 @@ public class BorrowRecords extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
+	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  
+    static final String DB_URL = "jdbc:mysql://localhost:3306/library?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    
+    // 数据库的用户名与密码
+    static final String USER = "root";
+    static final String PASS = "123456";
+	
 	public void create() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BorrowRecords.class.getResource("/library/book.jpg")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,9 +76,9 @@ public class BorrowRecords extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
-		textField_1 = new JTextField();
+		textField_1 = new JTextArea();
 		textField_1.setEditable(false);
-		textField_1.setFont(new Font("微软雅黑", Font.PLAIN, 30));
+		textField_1.setFont(new Font("微软雅黑", Font.PLAIN, 22));
 		scrollPane.setViewportView(textField_1);
 		textField_1.setColumns(10);
 		
@@ -136,7 +154,82 @@ public class BorrowRecords extends JFrame {
 		);
 		panel_1.setLayout(gl_panel_1);
 		
+		//查询
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				lookUp(textField.getText());
+			}
+
+			private void lookUp(String borrowID) {
+				Connection conn = null;
+		    	Statement stmt = null;
+		    	try{
+		    		
+		    		// 注册 JDBC 驱动
+		    		Class.forName(JDBC_DRIVER);
+		    		
+		    		// 打开链接
+		    		System.out.println("连接数据库...");
+		    		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		    		    		
+		    		//读者验证登录
+
+		    		stmt = conn.createStatement();
+		    		String sql;
+		    		sql = "select * from 借阅记录 where 账户ID = "+borrowID+";";
+		    		System.out.println(sql);
+		    		ResultSet rs = stmt.executeQuery(sql);
+
+		    		// 展开结果集数据库
+		    		StringBuffer str = new StringBuffer("");
+		    		while(rs.next()){
+		    			// 通过字段检索
+		    			Integer borrowNum = rs.getInt("借阅数量");
+		    			String borrowDate = rs.getString("借出日期");
+		    			String backDate = rs.getString("归还期限");
+		    			Integer ID  = rs.getInt("借阅记录ID");
+		    			Integer bookID = rs.getInt("图书ID");
+		    			Integer userID = rs.getInt("账户ID");
+		    			str.append("    "+borrowNum.toString()+"	"+borrowDate
+		    					+"	"+backDate+"	"+ID.toString()+"	"+bookID.toString()+"	"+userID.toString()+"\n");
+		    			
+		    			textField_1.setText(str.toString());
+		    			
+
+		    			// 输出数据
+		    		}
+		    		// 完成后关闭
+		    		rs.close();
+		    		stmt.close();
+		    		conn.close();
+		    		
+		    	}catch(SQLException se){
+		    		// 处理 JDBC 错误
+		    		se.printStackTrace();
+		    	}catch(Exception e){
+		    		// 处理 Class.forName 错误
+		    		e.printStackTrace();
+		    	}finally{
+		    		// 关闭资源
+		    		try{
+		    			if(stmt!=null) stmt.close();
+		    		}catch(SQLException se2){
+		    		}// 什么都不做
+		    		try{
+		    			if(conn!=null) conn.close();
+		    		}catch(SQLException se){
+		    			se.printStackTrace();
+		    		}
+		    	}
+		    	System.out.println("再见!");
+			}
+		});
 		
+		
+		setResizable(false);
 		setVisible(true);
 	}
 }

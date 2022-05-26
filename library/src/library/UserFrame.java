@@ -15,7 +15,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionListener;import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import javax.swing.JLabel;
@@ -92,17 +93,10 @@ public class UserFrame extends JFrame {
 		GridBagConstraints gbc_btnNewButton_1_1 = new GridBagConstraints();
 		gbc_btnNewButton_1_1.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton_1_1.gridx = 0;
-		gbc_btnNewButton_1_1.gridy = 4;
+		gbc_btnNewButton_1_1.gridy = 5;
 		contentPane.add(btnNewButton_1_1, gbc_btnNewButton_1_1);
 		
-//		JButton btnNewButton_1 = new JButton("\u56FE\u4E66\u501F\u9605");
-//		btnNewButton_1.setBackground(new Color(255, 228, 181));
-//		btnNewButton_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 30));
-//		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-//		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-//		gbc_btnNewButton_1.gridx = 0;
-//		gbc_btnNewButton_1.gridy = 5;
-//		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
+		
 		
 		JButton btnNewButton_2 = new JButton("\u501F\u9605\u8BB0\u5F55");
 		btnNewButton_2.setBackground(new Color(255, 228, 181));
@@ -132,14 +126,6 @@ public class UserFrame extends JFrame {
 				BookLookUp.getInstance().setVisible(true);
 			}
 		});
-//		//½èÔÄÌø×ª
-//		btnNewButton_1.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				
-//			}
-//		});
 		//½èÔÄ¼ÇÂ¼
 		btnNewButton_2.addActionListener(new ActionListener() {
 			
@@ -160,9 +146,7 @@ public class UserFrame extends JFrame {
 		});
 		
 		
-		
-		
-		
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 	}

@@ -1,3 +1,8 @@
+/**
+ * 先输入文本，再勾选checkbox
+ */
+
+
 package library;
 
 import java.awt.BorderLayout;
@@ -189,7 +194,7 @@ public class StartFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 注册
-				RegisterDialog.getInstance();
+				RegisterDialog.getInstance().setVisible(true);
 				getInstance().dispose();
 				
 				
@@ -213,6 +218,7 @@ public class StartFrame extends JFrame {
 		
 		//startframe
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 		setVisible(true);
 	}
 	private JPanel contentPane;
@@ -224,15 +230,6 @@ public class StartFrame extends JFrame {
 	 */
 	public static void main(String[] args) {
 		StartFrame.getInstance();
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
 	}
 
 	/**
